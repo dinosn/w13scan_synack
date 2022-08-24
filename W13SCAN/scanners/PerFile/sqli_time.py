@@ -17,7 +17,7 @@ from lib.core.plugins import PluginBase
 
 
 class W13SCAN(PluginBase):
-    name = '时间型SQL注入'
+    name = 'Timed SQL Injection'
     sleep_time = 5
     sleep_str = "[SLEEP_TIME]"
     verify_count = 2
@@ -97,10 +97,10 @@ class W13SCAN(PluginBase):
 
                     if r1 is not None and flag == self.verify_count:
                         result = self.new_result()
-                        result.init_info(self.requests.url, "SQL注入", VulType.SQLI)
+                        result.init_info(self.requests.url, "SQL Injection", VulType.SQLI)
                         for key, payload in new_dict.items():
-                            result.add_detail("payload探测", r1.reqinfo, generateResponse(r1),
-                                              "DBMS_TYPE:{}，时间相差:{}s".format(dbms_type, delta), key, payload,
+                            result.add_detail("payload detect", r1.reqinfo, generateResponse(r1),
+                                              "DBMS_TYPE:{}，timed:{}s".format(dbms_type, delta), key, payload,
                                               position)
                         self.success(result)
                         return True

@@ -16,11 +16,11 @@ from lib.core.settings import DEFAULT_GET_POST_DELIMITER, DEFAULT_COOKIE_DELIMIT
 
 
 class W13SCAN(PluginBase):
-    name = '路径穿越插件'
+    name = 'path traversal plugin'
 
     def paramsCombination(self, data: dict, place=PLACE.GET, payloads=[], hint=POST_HINT.NORMAL, urlsafe='/\\'):
         """
-        组合dict参数,将相关类型参数组合成requests认识的,防止request将参数进行url转义
+        Combine dict parameters, combine related type parameters into what requests recognize, and prevent requests from url-escaping parameters
 
         :param data:
         :param hint:
@@ -120,16 +120,16 @@ class W13SCAN(PluginBase):
                 for plain in plainArray:
                     if plain in html1:
                         result = ResultObject(self)
-                        result.init_info(self.requests.url, "目录穿越导致任意文件被读取", VulType.PATH_TRAVERSAL)
-                        result.add_detail("payload探测", r.reqinfo, generateResponse(r),
-                                          "探测payload:{},并发现回显{}".format(payload, plain), key, new_value, positon)
+                        result.init_info(self.requests.url, "Path traversal", VulType.PATH_TRAVERSAL)
+                        result.add_detail("payload detect", r.reqinfo, generateResponse(r),
+                                          "detect payload:{}, and print{}".format(payload, plain), key, new_value, positon)
                         self.success(result)
                         return
                 for regex in regexArray:
                     if re.search(regex, html1, re.I | re.S | re.M):
                         result = ResultObject(self)
-                        result.init_info(self.requests.url, "目录穿越导致任意文件被读取", VulType.PATH_TRAVERSAL)
-                        result.add_detail("payload探测", r.reqinfo, generateResponse(r),
-                                          "探测payload:{},并发现正则回显{}".format(payload, regex), key, new_value, positon)
+                        result.init_info(self.requests.url, "Path traversal - file read", VulType.PATH_TRAVERSAL)
+                        result.add_detail("payload detect", r.reqinfo, generateResponse(r),
+                                          "detect payload:{}, and print{}".format(payload, regex), key, new_value, positon)
                         self.success(result)
                         return

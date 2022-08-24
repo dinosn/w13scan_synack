@@ -13,8 +13,8 @@ from lib.core.plugins import PluginBase
 
 
 class W13SCAN(PluginBase):
-    desc = '''基于流量动态查找目录下仓库源码泄漏'''
-    name = '.git .svn .bzr .hg泄漏插件'
+    desc = '''Dynamically find source code leaks repositories'''
+    name = '.git .svn .bzr .hg'
 
     def audit(self):
 
@@ -31,7 +31,7 @@ class W13SCAN(PluginBase):
             r = requests.get(_, headers=headers)
             if re.search(flag[f], r.text, re.I | re.S | re.M):
                 result = self.new_result()
-                result.init_info(self.requests.url, "仓库泄漏", VulType.SENSITIVE)
-                result.add_detail("payload请求", r.reqinfo, generateResponse(r),
-                                  "匹配到正则:{}".format(flag[f]), "", "", PLACE.GET)
+                result.init_info(self.requests.url, "repository leak", VulType.SENSITIVE)
+                result.add_detail("payload detect", r.reqinfo, generateResponse(r),
+                                  "identified:{}".format(flag[f]), "", "", PLACE.GET)
                 self.success(result)

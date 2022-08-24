@@ -23,11 +23,11 @@ from lib.helper.jscontext import SearchInputInScript
 
 
 class W13SCAN(PluginBase):
-    name = 'SSTI模板注入探测插件'
+    name = 'SSTI Template Injection Detection Plugin'
 
     def init(self):
         self.result = ResultObject(self)
-        self.result.init_info(self.requests.url, "模板注入", VulType.SSTI)
+        self.result.init_info(self.requests.url, "template injection", VulType.SSTI)
 
     def getSSTIPayload(self, randint1=444, randint2=666) -> list:
         '''
@@ -91,10 +91,10 @@ class W13SCAN(PluginBase):
                     r2 = self.test_ssti(data, k, position)
                     if r2:
                         result = self.new_result()
-                        result.init_info(self.requests.url, "SSTI模板注入", VulType.SSTI)
-                        result.add_detail("第一次payload请求", r1["request"], r1["response"],
+                        result.init_info(self.requests.url, "SSTI Template Injection", VulType.SSTI)
+                        result.add_detail("First payload detect", r1["request"], r1["response"],
                                           r1["desc"], k, r1["payload"], position)
-                        result.add_detail("第二次payload请求", r2["request"], r2["response"],
+                        result.add_detail("Second payload detect", r2["request"], r2["response"],
                                           r2["desc"], k, r2["payload"], position)
                         self.success(result)
                         break
@@ -115,7 +115,7 @@ class W13SCAN(PluginBase):
                 return {
                     "request": r1.reqinfo,
                     "response": generateResponse(r1),
-                    "desc": "payload:{} 会回显{} 不编码payload".format(payload, checksum),
+                    "desc": "payload:{} will print {} without encoding payload".format(payload, checksum),
                     "payload": payload
                 }
             # url编码请求
@@ -124,7 +124,7 @@ class W13SCAN(PluginBase):
                 return {
                     "request": r1.reqinfo,
                     "response": generateResponse(r1),
-                    "desc": "payload:{} 会回显{} url编码payload".format(payload, checksum),
+                    "desc": "payload:{} will print {} url encoded payload".format(payload, checksum),
                     "payload": payload
                 }
             # html编码请求
@@ -134,7 +134,7 @@ class W13SCAN(PluginBase):
                 return {
                     "request": r1.reqinfo,
                     "response": generateResponse(r1),
-                    "desc": "payload:{} 会回显{} html编码payload".format(payload, checksum),
+                    "desc": "payload:{} will print {} html encoded payload".format(payload, checksum),
                     "payload": payload
                 }
 

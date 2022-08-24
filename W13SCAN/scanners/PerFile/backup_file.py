@@ -13,8 +13,8 @@ from lib.core.plugins import PluginBase
 
 
 class W13SCAN(PluginBase):
-    name = '基于文件的备份文件'
-    desc = '''扫描基于文件的备份文件'''
+    name = 'Backup file scanner'
+    desc = '''Scan for backup files'''
 
     def _check(self, content):
         """
@@ -67,7 +67,7 @@ class W13SCAN(PluginBase):
                 if self._check(content) or "application/octet-stream" in r.headers.get("Content-Type", ''):
                     rarsize = int(r.headers.get('Content-Length', 0)) // 1024 // 1024
                     result = self.new_result()
-                    result.init_info(self.requests.url, "备份文件下载", VulType.BRUTE_FORCE)
-                    result.add_detail("payload请求", r.reqinfo, content.decode(errors='ignores'),
-                                      "备份文件大小:{}M".format(rarsize), "", "", PLACE.GET)
+                    result.init_info(self.requests.url, "Backup file download", VulType.BRUTE_FORCE)
+                    result.add_detail("payload detect", r.reqinfo, content.decode(errors='ignores'),
+                                      "Backup file size:{}M".format(rarsize), "", "", PLACE.GET)
                     self.success(result)

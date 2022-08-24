@@ -8,8 +8,8 @@ from lib.core.plugins import PluginBase
 
 
 class W13SCAN(PluginBase):
-    name = '目录遍历插件'
-    desc = '''遍历每个目录，查看是否可以直接访问'''
+    name = 'Directory listing'
+    desc = '''Directory listing'''
 
     def audit(self):
 
@@ -25,8 +25,8 @@ class W13SCAN(PluginBase):
         for i in flag_list:
             if i in resp_str.lower():
                 result = self.new_result()
-                result.init_info(self.requests.url, "目录遍历", VulType.SENSITIVE)
-                result.add_detail("payload请求", self.requests.raw, self.response.raw,
-                                  "匹配到关键词:{}".format(i), "", "", PLACE.GET)
+                result.init_info(self.requests.url, "Directory listing", VulType.SENSITIVE)
+                result.add_detail("payload detect", self.requests.raw, self.response.raw,
+                                  "identified:{}".format(i), "", "", PLACE.GET)
                 self.success(result)
                 break

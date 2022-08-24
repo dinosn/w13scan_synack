@@ -12,7 +12,7 @@ from lib.helper.helper_sensitive import sensitive_page_error_message_check
 
 
 class W13SCAN(PluginBase):
-    name = '基于报错SQL注入'
+    name = 'Error based SQL Injection'
 
     def audit(self):
         num = random_num(4)
@@ -45,9 +45,9 @@ class W13SCAN(PluginBase):
 
                     if match:
                         result = self.new_result()
-                        result.init_info(self.requests.url, "SQL注入", VulType.SQLI)
-                        result.add_detail("payload探测", r.reqinfo, generateResponse(r),
-                                          "DBMS_TYPE:{} 匹配结果:{}".format(dbms_type, match.group()), key, payload,
+                        result.init_info(self.requests.url, "SQL Injection", VulType.SQLI)
+                        result.add_detail("payload detect", r.reqinfo, generateResponse(r),
+                                          "DBMS_TYPE:{} error based:{}".format(dbms_type, match.group()), key, payload,
                                           positon)
                         self.success(result)
                         return True
@@ -55,9 +55,9 @@ class W13SCAN(PluginBase):
                 message_lists = sensitive_page_error_message_check(html)
                 if message_lists:
                     result = self.new_result()
-                    result.init_info(self.requests.url, "SQL注入", VulType.SQLI)
-                    result.add_detail("payload探测", r.reqinfo, generateResponse(r),
-                                      "需要注意的报错信息:{}".format(repr(message_lists)), key, payload,
+                    result.init_info(self.requests.url, "SQL Injection", VulType.SQLI)
+                    result.add_detail("payload detect", r.reqinfo, generateResponse(r),
+                                      "Error messages:{}".format(repr(message_lists)), key, payload,
                                       positon)
                     self.success(result)
                     return True

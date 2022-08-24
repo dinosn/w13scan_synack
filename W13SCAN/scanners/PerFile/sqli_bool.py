@@ -16,7 +16,7 @@ from lib.helper.diifpage import findDynamicContent, getFilteredPageContent
 
 
 class W13SCAN(PluginBase):
-    name = '基于布尔判断的SQL注入'
+    name = 'Boolean based SQL injection'
 
     def __init__(self):
         super().__init__()
@@ -27,7 +27,7 @@ class W13SCAN(PluginBase):
         self.DIFF_TOLERANCE = 0.05
         self.CONSTANT_RATIO = 0.9
 
-        self.retry = 6  # 重试次数
+        self.retry = 6  # number of retries
         self.dynamic = []
 
     def findDynamicContent(self, firstPage, secondPage):
@@ -117,7 +117,7 @@ class W13SCAN(PluginBase):
                 "key": k,
                 "payload": payload_true,
                 "position": positon,
-                "desc": "发送True请求包与原网页相似度:{}".format(ratio_true)
+                "desc": "Send True request packet and the original web page:{}".format(ratio_true)
             })
             ret.append({
                 "request": r2.reqinfo,
@@ -125,7 +125,7 @@ class W13SCAN(PluginBase):
                 "key": k,
                 "payload": payload_false,
                 "position": positon,
-                "desc": "发送False请求包与原网页相似度:{}".format(ratio_false)
+                "desc": "Send False request:{}".format(ratio_false)
             })
             return ret
         else:
@@ -157,7 +157,7 @@ class W13SCAN(PluginBase):
 
         count = 0
         ratio = 0
-        # 动态内容替换
+        # dynamic content replacement
 
         self.resp_str = self.response.text
         while ratio <= 0.98:
@@ -179,7 +179,7 @@ class W13SCAN(PluginBase):
             count += 1
 
         iterdatas = self.generateItemdatas()
-        # 根据原始payload和位置组合新的payload
+        # Combine new payload based on original payload and location
         for origin_dict, positon in iterdatas:
             if positon == PLACE.URI:
                 continue
@@ -217,13 +217,13 @@ class W13SCAN(PluginBase):
                         ret2 = self.inject(origin_dict, positon, k, payload_false, payload_true)
                         if ret2:
                             result = self.new_result()
-                            result.init_info(self.requests.url, "SQL注入", VulType.SQLI)
+                            result.init_info(self.requests.url, "SQL injection", VulType.SQLI)
                             for values in ret1:
-                                result.add_detail("第一次布尔验证", values["request"], values["response"],
+                                result.add_detail("first boolean validation", values["request"], values["response"],
                                                   values["desc"], values["key"], values["payload"],
                                                   values["position"])
                             for values in ret2:
-                                result.add_detail("第二次布尔验证", values["request"], values["response"],
+                                result.add_detail("Second Boolean Validation", values["request"], values["response"],
                                                   values["desc"], values["key"], values["payload"],
                                                   values["position"])
                             self.success(result)

@@ -8,7 +8,7 @@ from api import isJavaObjectDeserialization, isPHPObjectDeserialization, isPytho
 
 
 class W13SCAN(PluginBase):
-    name = '反序列化参数分析插件'
+    name = 'Deserialization parameter analysis plugin'
 
     def _check(self, k, v):
         whats = None
@@ -20,9 +20,9 @@ class W13SCAN(PluginBase):
             whats = "PythonObjectDeserialization"
         if whats:
             result = ResultObject(self)
-            text_result = "发现{}反序列化参数".format(whats)
+            text_result = "found {} deserialization parameter".format(whats)
             result.init_info(self.requests.url, text_result, VulType.BASELINE)
-            result.add_detail("原始请求", self.requests.raw, self.response.raw, "参数{}发现为{}的反序列化结果".format(k, whats), k,
+            result.add_detail("original request", self.requests.raw, self.response.raw, "Parameter {} was found to be the deserialized result of {}".format(k, whats), k,
                               v, self.requests.method)
             self.success(result)
 

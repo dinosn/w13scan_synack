@@ -18,7 +18,7 @@ from lib.parse.parse_responnse import FakeResp
 
 class W13SCAN(PluginBase):
     type = 'loader'
-    desc = '''Loader插件对请求以及响应进行解析，从而调度更多插件运行'''
+    desc = '''Plugins loader'''
     name = 'plugin loader'
 
     def audit(self):

@@ -15,8 +15,8 @@ from lib.helper.helper_sensitive import sensitive_page_error_message_check
 
 
 class W13SCAN(PluginBase):
-    name = 'PHP代码注入'
-    desc = '''PHP代码注入发现，可执行任意php代码'''
+    name = 'PHP code injection'
+    desc = '''PHP code injection discovery, executable arbitrary PHP code'''
 
     def audit(self):
         if WEB_PLATFORM.PHP not in self.response.programing and conf.level < 2:
@@ -34,12 +34,12 @@ class W13SCAN(PluginBase):
             "${{@print(md5({}))}}\\".format(randint),
             "'.print(md5({})).'".format(randint)
         ]
-        # 载入处理位置以及原始payload
+        # Load processing location and original payload
         iterdatas = self.generateItemdatas()
 
         errors = None
         errors_raw = ()
-        # 根据原始payload和位置组合新的payload
+        # Combine new payload based on original payload and location
         for origin_dict, positon in iterdatas:
             payloads = self.paramsCombination(origin_dict, positon, _payloads)
             for key, value, new_value, payload in payloads:
@@ -50,15 +50,15 @@ class W13SCAN(PluginBase):
                 if verify_result in html1:
                     result = self.new_result()
                     result.init_info(self.requests.url, self.desc, VulType.CMD_INNJECTION)
-                    result.add_detail("payload探测", r.reqinfo, generateResponse(r),
-                                      "探测payload:{}并发现回显:{}".format(new_value, verify_result), key, value, positon)
+                    result.add_detail("payload", r.reqinfo, generateResponse(r),
+                                      "detected payload:{}found in content:{}".format(new_value, verify_result), key, value, positon)
                     self.success(result)
                     break
                 if re.search(regx, html1, re.I | re.S | re.M):
                     result = self.new_result()
                     result.init_info(self.requests.url, self.desc, VulType.CMD_INNJECTION)
-                    result.add_detail("payload探测", r.reqinfo, generateResponse(r),
-                                      "探测payload:{}并发现正则回显:{},可能是payload未闭合语句造成的错误".format(new_value, regx), key,
+                    result.add_detail("payload", r.reqinfo, generateResponse(r),
+                                      "detected payload :{} and found that the regular echo :{}, may be the error caused by the unclosed statement of the payload".format(new_value, regx), key,
                                       value, positon)
                     self.success(result)
                     break
@@ -70,10 +70,10 @@ class W13SCAN(PluginBase):
             if errors:
                 result = self.new_result()
                 key, value = errors_raw
-                result.init_info(self.requests.url, "敏感配置信息泄漏", VulType.SENSITIVE)
+                result.init_info(self.requests.url, "PHP code Information leak", VulType.SENSITIVE)
                 for m in errors:
                     text = m["text"]
                     _type = m["type"]
-                    result.add_detail("payload请求", r.reqinfo, generateResponse(r),
-                                      "匹配组件:{} 匹配正则:{}".format(_type, text), key, value, positon)
+                    result.add_detail("payload request", r.reqinfo, generateResponse(r),
+                                      "match component:{} match regular:{}".format(_type, text), key, value, positon)
                 self.success(result)

@@ -23,11 +23,11 @@ from lib.helper.jscontext import SearchInputInScript
 
 
 class W13SCAN(PluginBase):
-    name = 'XSS语义化探测插件'
+    name = 'XSS scanner'
 
     def init(self):
         self.result = ResultObject(self)
-        self.result.init_info(self.requests.url, "XSS脚本注入", VulType.XSS)
+        self.result.init_info(self.requests.url, "XSS script injection", VulType.XSS)
 
     def audit(self):
 
@@ -83,8 +83,8 @@ class W13SCAN(PluginBase):
                     data[k] = payload
                     req = self.req(positon, data)
                     if payload in req.text:
-                        self.result.add_detail("html代码未转义", req.reqinfo, generateResponse(req),
-                                               "可使用<svg onload=alert`1`// 进行攻击测试,注意返回格式为:" + html_type, k, data[k],
+                        self.result.add_detail("html code not escaped", req.reqinfo, generateResponse(req),
+                                               "<svg onload=alert`1`// test as payload:" + html_type, k, data[k],
                                                positon)
 
                 for item in locations:
@@ -99,8 +99,8 @@ class W13SCAN(PluginBase):
                             _locations = SearchInputInResponse(payload, req.text)
                             for _item in _locations:
                                 if payload in _item["details"]["content"] and _item["details"]["tagname"] == "style":
-                                    self.result.add_detail("IE下可执行的表达式", req.reqinfo, generateResponse(req.text),
-                                                           "IE下可执行的表达式 expression(alert(1))", k, data[k], positon)
+                                    self.result.add_detail("IE executable expression", req.reqinfo, generateResponse(req.text),
+                                                           "IE executable expression expression(alert(1))", k, data[k], positon)
                                     break
                         flag = random_str(7)
                         payload = "</{}><{}>".format(random_upper(details["tagname"]), flag)
@@ -349,9 +349,9 @@ class W13SCAN(PluginBase):
                                     for _output in output:
                                         if flag in _output["details"]["content"] and _output[
                                             "type"] == "ScriptIdentifier":
-                                            self.result.add_detail("script脚本内容可被任意设置", req.reqinfo,
+                                            self.result.add_detail("script content can be defined XSS case", req.reqinfo,
                                                                    generateResponse(req),
-                                                                   "测试payload:{},注意返回格式为:{}".format(truepayload,
+                                                                   "detect payload:{},response is:{}".format(truepayload,
                                                                                                     html_type), k,
                                                                    data[k], positon)
                                             break

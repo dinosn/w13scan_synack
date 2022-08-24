@@ -71,7 +71,7 @@ class W13SCAN(PluginBase):
 
                 rarsize = int(r.headers.get('Content-Length')) // 1024 // 1024
                 result = self.new_result()
-                result.init_info(self.requests.url, "备份文件下载", VulType.BRUTE_FORCE)
-                result.add_detail("payload请求", r.reqinfo, content.decode(errors='ignore'),
-                                  "备份文件大小:{}M".format(rarsize), "", "", PLACE.GET)
+                result.init_info(self.requests.url, "Backup file download", VulType.BRUTE_FORCE)
+                result.add_detail("payload detect", r.reqinfo, content.decode(errors='ignore'),
+                                  "Backup file size:{}M".format(rarsize), "", "", PLACE.GET)
                 self.success(result)

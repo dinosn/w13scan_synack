@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# @Time    : 2020/5/10 5:28 PM
-# @Author  : w8ay
+# @Time    : 23/08/2022
+# @Author  : krasn based on w8ay's work
 # @File    : spider.py
+
 import os
 import sys
 from urllib.parse import urlparse
@@ -10,6 +11,7 @@ from urllib.parse import urlparse
 import requests
 import json
 import subprocess
+import argparse
 
 from lib.core.data import KB
 
@@ -18,15 +20,15 @@ sys.path.append(os.path.join(root, "../"))
 sys.path.append(os.path.join(root, "../", "W13SCAN"))
 from api import modulePath, init, FakeReq, FakeResp, HTTPMETHOD, task_push_from_name, start, logger
 
-# 爬虫文件路径
-Excvpath = "/Users/boyhack/tools/crawlergo/crawlergo_darwin"
+# Crawlergo path
+Excvpath = "/root/tools/crawlergo/crawlergo"
 
-# Chrome 路径
-Chromepath = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+# Chrome path
+Chromepath = "/home/krasn/BurpSuitePro/burpbrowser/103.0.5060.134/chrome"
 
 
 def read_test():
-    with open("spider_testphp.vulnweb.com.json") as f:
+    with open("spider_testasp.vulnweb.com.json") as f:
         datas = f.readlines()
     for data in datas:
         item = json.loads(data)
@@ -49,7 +51,7 @@ def read_test():
         fake_req = FakeReq(req.url, {}, http_model, data)
         fake_resp = FakeResp(req.status_code, req.content, req.headers)
         task_push_from_name('loader', fake_req, fake_resp)
-    logger.info("爬虫结束，开始漏洞扫描")
+    logger.info("Crawling complete, start of analysis")
     start()
 
 
@@ -57,22 +59,24 @@ def vulscan(target):
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
                       "Chrome/74.0.3945.0 Safari/537.36",
-        "Spider-Name": "Baidu.Inc"
     }
     if target == "":
         return
     elif "://" not in target:
         target = "http://" + target
     try:
+        print("trying at {}", target)
         req = requests.get(target, headers=headers, timeout=60)
         target = req.url
     except:
-        return
+        pass
+#        return
     netloc = urlparse(target).netloc
-    logger.info("开始爬虫:{}".format(target))
+    logger.info("Crawling:{}".format(target))
     cmd = [Excvpath, "-c", Chromepath, "--fuzz-path", "--robots-path", "-t", "20", "--custom-headers",
-           json.dumps(headers), "--max-crawled-count", "10086", "-i", "-o", "json",
+           json.dumps(headers), "--max-crawled-count", "10086", "-o", "json",
            target]
+    print(cmd)
     rsp = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     output, error = rsp.communicate()
     try:
@@ -81,7 +85,7 @@ def vulscan(target):
         return
     if result:
         all_req_list = result["req_list"]
-        logger.info("获得数据:{}".format(len(all_req_list)))
+        logger.info("Data analysis:{}".format(len(all_req_list)))
         for item in all_req_list:
             with open("spider_{}.json".format(netloc), "a+") as f:
                 f.write(json.dumps(item) + '\n')
@@ -104,33 +108,41 @@ def vulscan(target):
             fake_req = FakeReq(req.url, {}, http_model, data)
             fake_resp = FakeResp(req.status_code, req.content, req.headers)
             task_push_from_name('loader', fake_req, fake_resp)
-            logger.info("加入扫描目标:{}".format(req.url))
+            logger.info("Scan target:{}".format(req.url))
 
-    logger.info("爬虫结束，开始漏洞扫描")
+    logger.info("Crawl complete, processing vulnerability analysis")
     start()
-    logger.info("漏洞扫描结束")
-    logger.info("发现漏洞:{}".format(KB.output.count()))
+    logger.info("Vulnerability scan ended")
+    logger.info("Issues identified:{}".format(KB.output.count()))
 
 
 def init_w13scan():
     root = modulePath()
     configure = {
-        "debug": False,  # debug模式会显示更多信息
+        "debug": False,  # debug mode 
         "level": 2,
         "timeout": 30,
         "retry": 3,
-        "json": "",  # 自定义输出json结果路径,
+        "json": "",  # Custom output json result path,
         "html": True,
-        "threads": 30,  # 线程数量,
+        "threads": 30,  # number of threads,
         "disable": [],
         "able": [],
-        "excludes": ["google", "lastpass", '.gov.cn']  # 不扫描的网址
+        "excludes": ["google", "lastpass", '.synack.com']  # URLs that are excluded
     }
     init(root, configure)
 
 
 if __name__ == '__main__':
-    target = "http://testphp.vulnweb.com/"
-    init_w13scan()
-    vulscan(target)
-    # read_test()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-s','--s',help="Initiate scan on domain")
+    args = parser.parse_args()
+    if len(sys.argv) < 2:
+        print ("No arguments provided -h for help")
+        exit()
+    else:
+        init_w13scan()
+    if args.s:
+        target = str(args.s.lower())
+        vulscan(target)
+#    read_test()

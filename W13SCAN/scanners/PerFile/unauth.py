@@ -18,8 +18,8 @@ from lib.core.plugins import PluginBase
 
 
 class W13SCAN(PluginBase):
-    name = '未授权访问探测插件'
-    desc = '''授权页面存在缺陷导致其他用户可以直接访问从而引发重要权限可被操作、数据库或网站目录等敏感信息泄露。'''
+    name = 'Unauthorized access test module'
+    desc = '''There is a flaw in the authorization page, which allows other users to directly access it, resulting in the disclosure of important permissions, sensitive information such as databases or website directories.'''
     seqMatcher = difflib.SequenceMatcher(None)
     SIMILAR_MIN = 0.95
 
@@ -50,8 +50,8 @@ class W13SCAN(PluginBase):
                     if ratio > self.SIMILAR_MIN:
                         result = self.new_result()
                         result.init_info(self.requests.url, self.desc, VulType.UNAUTH)
-                        result.add_detail("请求Payload", r.reqinfo, generateResponse(r),
-                                          "删除{}后存在未授权访问".format(k), k, v, position)
+                        result.add_detail("Request Payload", r.reqinfo, generateResponse(r),
+                                          "Unauthorized access exists after removing {}".format(k), k, v, position)
                         self.success(result)
                         break
 

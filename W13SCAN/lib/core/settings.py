@@ -4,9 +4,9 @@
 # @Author  : w8ay
 # @File    : const.py
 
-VERSION = '2.2.2'
+VERSION = '2.2.2-synack'
 SITE = 'https://github.com/w-digital-scanner/w13scan'
-DEFAULT_USER_AGENT = "w13scan/#v%s (%s)" % (VERSION, SITE)
+DEFAULT_USER_AGENT = "synack-scanner/#v%s" % (VERSION)
 
 acceptedExt = [
     '.php', '.php3', '.php4', '.php5', '.php7', '.phtml',
@@ -48,7 +48,7 @@ logoutParams = [
     'shutdown',
 ]
 
-GITHUB_REPORT_OAUTH_TOKEN = "NTYzYjhmZWJjYzc0Njg2ODJhNzhmNDg1YzM0YzlkYjk3N2JiMzE3Nw=="
+GITHUB_REPORT_OAUTH_TOKEN = ""
 # sqlmap report
 
 # Default delimiter in cookie values

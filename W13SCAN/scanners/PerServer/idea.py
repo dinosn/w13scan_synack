@@ -15,7 +15,7 @@ from lib.core.plugins import PluginBase
 
 
 class W13SCAN(PluginBase):
-    name = 'idea目录解析'
+    name = 'idea workspace'
 
     def audit(self):
         headers = self.requests.headers
@@ -40,7 +40,7 @@ class W13SCAN(PluginBase):
                             path_lst.append(path)
             if path_lst:
                 result = self.new_result()
-                result.init_info(self.requests.url, "idea敏感文件发现", VulType.DIRSCAN)
-                result.add_detail("payload请求", r.reqinfo, generateResponse(r),
-                                  "敏感目录列表:{}".format(repr(path_lst)), "", "", PLACE.GET)
+                result.init_info(self.requests.url, "idea workspace", VulType.DIRSCAN)
+                result.add_detail("payload detect", r.reqinfo, generateResponse(r),
+                                  "List of sensitive directories:{}".format(repr(path_lst)), "", "", PLACE.GET)
                 self.success(result)

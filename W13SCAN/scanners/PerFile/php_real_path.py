@@ -15,8 +15,8 @@ from lib.core.plugins import PluginBase
 
 
 class W13SCAN(PluginBase):
-    desc = '''对于一些php网站，将正常参数替换为[]可能造成真实信息泄漏'''
-    name = 'php 真实路径泄漏'
+    desc = '''PHP realpath LFI scan'''
+    name = 'php realpath scan possible LFI'
 
     def audit(self):
         headers = self.requests.headers
@@ -48,6 +48,6 @@ class W13SCAN(PluginBase):
                     path = get_middle_text(r.text, 'array given in ', ' on line')
                     result = self.new_result()
                     result.init_info(self.requests.url, self.desc, VulType.SENSITIVE)
-                    result.add_detail("payload探测", r.reqinfo, generateResponse(r),
-                                      "将参数{k}={v}替换为{k}[]={v},path路径泄漏:{p}".format(k=k, v=v, p=path), key, v, positon)
+                    result.add_detail("payload detect", r.reqinfo, generateResponse(r),
+                                      "parameter defined {k}={v} replaced with {k}[]={v},path leak:{p}".format(k=k, v=v, p=path), key, v, positon)
                     self.success(result)

@@ -14,7 +14,7 @@ from lib.core.plugins import PluginBase
 
 
 class W13SCAN(PluginBase):
-    name = 'iis解析漏洞'
+    name = 'iis parsing vulnerability'
 
     def audit(self):
         if WEB_PLATFORM.PHP in self.response.programing or conf.level >= 2:
@@ -26,7 +26,7 @@ class W13SCAN(PluginBase):
             ContentType = r.headers.get("Content-Type", '')
             if 'html' in ContentType and "allow" in r.text:
                 result = self.new_result()
-                result.init_info(self.requests.url, "代码解析漏洞", VulType.CODE_INJECTION)
-                result.add_detail("payload请求", r.reqinfo, generateResponse(r),
+                result.init_info(self.requests.url, "IIS parsing", VulType.CODE_INJECTION)
+                result.add_detail("payload detect", r.reqinfo, generateResponse(r),
                                   "Content-Type:{}".format(ContentType), "", "", PLACE.GET)
                 self.success(result)
